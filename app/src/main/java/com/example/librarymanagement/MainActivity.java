@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -80,12 +82,24 @@ public class MainActivity extends AppCompatActivity {
                     }
                     return true;
                 } else if (item.getItemId() == R.id.menu_rate) {
-                    Toast.makeText(MainActivity.this, "rate", Toast.LENGTH_SHORT).show();
-                    // Implement rate us functionality
+                    String appPackageName = "com.setmycart.admin";
+
+                    try {
+                        // Create an intent to open the app's page on Google Play Store
+                        Intent rateIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName));
+                        rateIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+
+                        // Try opening the Play Store
+                        startActivity(rateIntent);
+                    } catch (ActivityNotFoundException e) {
+                        // If the user doesn't have the Play Store app, open the app page in a browser
+                        Intent rateIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName));
+                        startActivity(rateIntent);
+                    }
                     return true;
                 } else if (item.getItemId() == R.id.menu_version) {
                     // Implement displaying app version
-                    Toast.makeText(MainActivity.this, "version", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "1.0.1.3", Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
@@ -102,13 +116,13 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new booksFragment())
                             .commit();
-                    Toast.makeText(MainActivity.this, "books", Toast.LENGTH_SHORT).show();
                     return true;
                 } else if (item.getItemId() == R.id.nav_users) {
                     // Handle Users tab click
                     // Load Users fragment or perform required action
-                    Toast.makeText(MainActivity.this, "users", Toast.LENGTH_SHORT).show();
-                    return true;
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new usersFragment())
+                            .commit();
                 } else if (item.getItemId() == R.id.nav_library) {
                     // Handle Library tab click
                     // Load Library fragment or perform required action
